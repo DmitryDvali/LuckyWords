@@ -1,0 +1,109 @@
+﻿<Window x:Class="LuckyWords.Person"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LuckyWords"
+        mc:Ignorable="d"
+        Title="Балда" Height="320" Width="600" MaxHeight="320" MaxWidth="600">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="6*"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="player1Label" Content="Игрок 1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Label x:Name="points1Label" Content="Очки" Grid.Row="1" HorizontalAlignment="Left" Margin="45 0 0 0"/>
+            <Label x:Name="points1" Content="0" Grid.Row="1" HorizontalAlignment="Left" Margin="85 0 0 0"/>
+            <Label x:Name="words1Label" Content="Слова:" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ListBox x:Name="words1ListBox" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Top" Height="150"  Width="110"/>
+        </Grid>
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="6*"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="player2Label" Content="Игрок 2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Label x:Name="points2Label" Content="Очки" Grid.Row="1" HorizontalAlignment="Left" Margin="45 0 0 0"/>
+            <Label x:Name="points2" Content="0" Grid.Row="1" HorizontalAlignment="Left" Margin="85 0 0 0"/>
+            <Label x:Name="words2Label" Content="Слова:" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ListBox x:Name="words2ListBox" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Top" Height="150"  Width="110"/>
+        </Grid>
+
+        <Grid Grid.Column="1"  Margin="0 10 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="220"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="textBox00" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox01" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox02" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox03" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox04" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox10" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox11" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox12" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox13" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox14" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox20" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand" IsReadOnly="True"/>
+                    <TextBox x:Name="textBox21" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand" IsReadOnly="True"/>
+                    <TextBox x:Name="textBox22" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand" IsReadOnly="True"/>
+                    <TextBox x:Name="textBox23" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand" IsReadOnly="True"/>
+                    <TextBox x:Name="textBox24" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand" IsReadOnly="True"/>
+                    <TextBox x:Name="textBox30" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox31" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox32" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox33" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox34" Grid.Row="3" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox40" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox41" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox42" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox43" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                    <TextBox x:Name="textBox44" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" FontSize="28" TextAlignment="Center" MaxLength="1" MaxLines="1" CharacterCasing="Upper" Cursor="Hand"/>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="endMoveButton" Content="Завершить ход" Grid.Column="0"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="100"/>
+                <Button x:Name="missMoveButton" Content="Пропустить ход" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
