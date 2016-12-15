@@ -42,12 +42,12 @@ namespace LuckyWords
                     Squares.Add(new Square() { X = i, Y = j, TextBox = textBox });
                 }
 
-            //using (Context context = new Context())
-            //{
-            //    List<string> initialWordsList = (from unit in context.InitialWordsList
-            //                                     select unit.Word).ToList();
-            //    initialWord = initialWordsList[new Random().Next(initialWordsList.Count() - 1)];
-            //}
+            using (Context context = new Context())
+            {
+                List<string> initialWordsList = (from unit in context.InitialWordsList
+                                                 select unit.Word).ToList();
+                initialWord = initialWordsList[new Random().Next(initialWordsList.Count() - 1)];
+            }
 
             for (int i = 10; i < 15; i++)
             {
