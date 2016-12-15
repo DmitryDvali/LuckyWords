@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LuckyWords.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,241 @@ namespace LuckyWords
     /// </summary>
     public partial class Person : Window
     {
+        string initialWord;
+
+        List<Square> Squares = new List<Square>();
+        List<Word> Words = new List<Word>();
+        Word moveWord = new Word() { Squares = new List<Square>() };
+
+        int firstPlayerPoints = 0, secondPlayerPoints = 0, countFilledSquares = 0;
+
+        bool firstPlayersMove = true, ableToSelect = false, oneSquareIsSelected = false;
+
         public Person()
         {
             InitializeComponent();
+
+            for (int i = 0; i < 5; i++)
+                for (int j = 0; j < 5; j++)
+                {
+                    string textBoxName = "textBox" + i.ToString() + j.ToString();
+                    TextBox textBox = (TextBox)FindName(textBoxName);
+                    Squares.Add(new Square() { X = i, Y = j, TextBox = textBox });
+                }
+
+            //using (Context context = new Context())
+            //{
+            //    List<string> initialWordsList = (from unit in context.InitialWordsList
+            //                                     select unit.Word).ToList();
+            //    initialWord = initialWordsList[new Random().Next(initialWordsList.Count() - 1)];
+            //}
+
+            for (int i = 10; i < 15; i++)
+            {
+                Squares[i].TextBox.Text = initialWord.Substring(0, 1).ToUpper();
+                initialWord = initialWord.Remove(0, 1);
+            }
+        }
+
+        private void TextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if ((sender as TextBox).Text != string.Empty)
+            {
+                foreach (Square square in Squares)
+                    if (square.TextBox.Text == string.Empty)
+                        square.TextBox.IsEnabled = false;
+            }
+            else
+            {
+                foreach (Square square in Squares)
+                    square.TextBox.IsEnabled = true;
+            }
+        }
+
+        private void PreviewMouseLeftButtonDownOnTextBox(object sender, MouseButtonEventArgs e)
+        {
+            Square senderSquare = Squares.First(square => square.TextBox == sender);
+
+            if (!ableToSelect)
+                foreach (Square square in Squares)
+                    if (square.TextBox.Text != string.Empty && square.TextBox.IsReadOnly == false)
+                    {
+                        ableToSelect = true;
+                        break;
+                    }
+
+            if (!oneSquareIsSelected)
+                foreach (Square square in Squares)
+                    if (square.TextBox.Background == Brushes.Aquamarine)
+                    {
+                        oneSquareIsSelected = true;
+                        break;
+                    }
+
+            if ((sender as TextBox).Background == Brushes.Aquamarine)
+            {
+                moveWord.Squares.Clear();
+                ableToSelect = false;
+                oneSquareIsSelected = false;
+                foreach (Square square in Squares)
+                {
+                    square.TextBox.Background = Brushes.White;
+                    square.TextBox.CaretBrush = Brushes.Black;
+                }
+                return;
+            }
+
+            if (!oneSquareIsSelected && ableToSelect)
+            {
+                moveWord.Squares.Add(Squares.Find(a => a.TextBox == sender));
+                (sender as TextBox).CaretBrush = Brushes.Aquamarine;
+                (sender as TextBox).Background = Brushes.Aquamarine;
+                return;
+            }
+
+            if (oneSquareIsSelected && ableToSelect)
+            {
+                double distance = Math.Sqrt(Math.Abs(Math.Pow(senderSquare.X - moveWord.Squares.Last().X, 2) + Math.Pow(senderSquare.Y - moveWord.Squares.Last().Y, 2)));
+                if (distance == 1)
+                {
+                    moveWord.Squares.Add(senderSquare);
+                    (sender as TextBox).CaretBrush = Brushes.Aquamarine;
+                    (sender as TextBox).Background = Brushes.Aquamarine;
+                    return;
+                }
+            }
+        }
+
+        private void endMoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            ableToSelect = false;
+            oneSquareIsSelected = false;
+
+            string finishWord = null;
+            bool isCorrectWord;
+
+            foreach (Square square in Squares)
+            {
+                if (square.TextBox.IsEnabled == true && square.TextBox.IsReadOnly == false
+                    && square.TextBox.Background != Brushes.Aquamarine)
+                {
+                    moveWord.Squares.Clear();
+                    foreach (Square sq in Squares)
+                    {
+                        sq.TextBox.Background = Brushes.White;
+                        sq.TextBox.CaretBrush = Brushes.Black;
+                    }
+                    MessageBox.Show("Необходимо использовать добавленную букву.");
+                    return;
+                }
+            }
+
+            foreach (Square square in moveWord.Squares)
+                finishWord += square.TextBox.Text;
+
+            using (Context context = new Context())
+            {
+                var dictItem = context.Dictionary.FirstOrDefault(item => item.Word == finishWord);
+                if (dictItem != null)
+                    isCorrectWord = true;
+                else isCorrectWord = false;
+            }
+
+            if (isCorrectWord && !words1ListBox.Items.Contains(finishWord) && !words2ListBox.Items.Contains(finishWord))
+            {
+                if (firstPlayersMove)
+                {
+                    points1.Content = (firstPlayerPoints += finishWord.Count()).ToString();
+                    words1ListBox.Items.Add(finishWord);
+                    firstPlayersMove = false;
+                    player1Label.FontWeight = FontWeights.Normal;
+                    player2Label.FontWeight = FontWeights.Bold;
+                }
+                else
+                {
+                    points2.Content = (secondPlayerPoints += finishWord.Count()).ToString();
+                    words2ListBox.Items.Add(finishWord);
+                    firstPlayersMove = true;
+                    player1Label.FontWeight = FontWeights.Bold;
+                    player2Label.FontWeight = FontWeights.Normal;
+                }
+
+                moveWord.Squares.Clear();
+                foreach (Square square in Squares)
+                {
+                    if (square.TextBox.Background == Brushes.Aquamarine)
+                    {
+                        square.TextBox.Background = Brushes.White;
+                        square.TextBox.CaretBrush = Brushes.Black;
+                        square.TextBox.IsReadOnly = true;
+                    }
+                    square.TextBox.IsEnabled = true;
+                }
+
+                countFilledSquares++;
+                if (countFilledSquares == 20)
+                {
+                    ShowWinner();
+                }
+                return;
+            }
+
+            if (words1ListBox.Items.Contains(finishWord) || words2ListBox.Items.Contains(finishWord))
+                MessageBox.Show("Это слово уже было использовано.");
+            else
+                MessageBox.Show("Такого слова нет.");
+
+            moveWord.Squares.Clear();
+            RemoveSelectionAndClearSquares();
+        }
+
+        private void missMoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            ableToSelect = false;
+            oneSquareIsSelected = false;
+
+            moveWord.Squares.Clear();
+            RemoveSelectionAndClearSquares();
+
+            if (firstPlayersMove)
+            {
+                player1Label.FontWeight = FontWeights.Normal;
+                player2Label.FontWeight = FontWeights.Bold;
+            }
+            else
+            {
+                player1Label.FontWeight = FontWeights.Bold;
+                player2Label.FontWeight = FontWeights.Normal;
+            }
+            firstPlayersMove = !firstPlayersMove;
+        }
+
+        void ShowWinner()
+        {
+            MessageBoxResult result;
+            if (firstPlayerPoints > secondPlayerPoints)
+                result = MessageBox.Show("Игрок 1 победил! Начать новую игру?", "Игра окончена.", MessageBoxButton.YesNo);
+            else if (firstPlayerPoints < secondPlayerPoints)
+                result = MessageBox.Show("Игрок 2 победил! Начать новую игру?", "Игра окончена.", MessageBoxButton.YesNo);
+            else
+                result = MessageBox.Show("Ничья! Начать новую игру?", "Игра окончена.", MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                (new MainWindow()).Show();
+                Close();
+            }
+        }
+
+        void RemoveSelectionAndClearSquares()
+        {
+            foreach (Square square in Squares)
+            {
+                square.TextBox.Background = Brushes.White;
+                square.TextBox.CaretBrush = Brushes.Black;
+                if (square.TextBox.IsReadOnly == false)
+                    square.TextBox.Text = string.Empty;
+            }
         }
     }
 }
