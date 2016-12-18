@@ -24,9 +24,14 @@ namespace LuckyWords
 
         List<Square> Squares = new List<Square>();
 
+        List<Word> potentialWordsList = new List<Word>();
+        List<Word> tempWordsList = new List<Word>();
+        List<string> computerWords = new List<string>();
+        List<Word> computerWordsList = new List<Word>();
+
         Square[,] squaresArray = new Square[5, 5];
 
-        Word moveWord = new Word() { Squares = new List<Square>() };
+        Word moveWord = new Word();
 
         int playerPoints = 0, computerPoints = 0, countFilledSquares = 0;
 
@@ -166,8 +171,6 @@ namespace LuckyWords
             {
                 points1.Content = (playerPoints += finishWord.Count()).ToString();
                 words1ListBox.Items.Add(finishWord);
-                player1Label.FontWeight = FontWeights.Normal;
-                player2Label.FontWeight = FontWeights.Bold;
 
                 moveWord.Squares.Clear();
                 foreach (Square square in Squares)
@@ -182,10 +185,12 @@ namespace LuckyWords
                 }
 
                 countFilledSquares++;
-                if (countFilledSquares == 20)
+                if (countFilledSquares == 10)
                 {
                     ShowWinner();
                 }
+
+                ComputerMove();
                 return;
             }
 
@@ -205,6 +210,8 @@ namespace LuckyWords
 
             moveWord.Squares.Clear();
             RemoveSelectionAndClearSquares();
+
+            ComputerMove();
         }
 
         void ShowWinner()
@@ -232,6 +239,217 @@ namespace LuckyWords
                 square.TextBox.CaretBrush = Brushes.Black;
                 if (square.TextBox.IsReadOnly == false)
                     square.TextBox.Text = string.Empty;
+            }
+        }
+
+        void ComputerMove()
+        {
+            potentialWordsList.Clear();
+            computerWords.Clear();
+            computerWordsList.Clear();
+
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    if (squaresArray[i, j].TextBox.Text != string.Empty)
+                    {
+                        Word potentialWordBeginning = new Word();
+                        potentialWordBeginning.Squares.Add(squaresArray[i, j]);
+                        WordBuilding(potentialWordBeginning);
+                    }
+                }
+            }
+
+            using (var context = new Context())
+            {
+                foreach (var dictWord in context.Dictionary)
+                {
+                    if (computerWords.Count() >= 1)
+                        if (computerWords.Last() != initialWord && !words1ListBox.Items.Contains(computerWords.Last())
+                && !words2ListBox.Items.Contains(computerWords.Last()))
+                            break;
+                    foreach (var potWord in potentialWordsList)
+                    {
+                        if (computerWords.Count() >= 1)
+                            if (computerWords.Last() != initialWord && !words1ListBox.Items.Contains(computerWords.Last())
+                    && !words2ListBox.Items.Contains(computerWords.Last()))
+                                break;
+                        bool allow = false;
+                        string pWord = null;
+
+                        foreach (var sq in potWord.Squares)
+                        {
+                            if (sq.TextBox.Text == string.Empty) pWord += "*";
+                            pWord += sq.TextBox.Text;
+                        }
+
+                        if (pWord.Length == dictWord.Word.Length)
+                        {
+                            for (int i = 0; i < pWord.Length; i++)
+                            {
+                                if (pWord[i] != '*')
+                                {
+                                    if (pWord.ToLower()[i] != dictWord.Word[i]) { allow = false; break; }
+                                    else { allow = true; }
+                                }
+                                else
+                                {
+                                    pWord = pWord.Replace('*', dictWord.Word.ToUpper()[i]);
+                                }
+                            }
+                        }
+
+                        if (allow)
+                        {
+                            computerWords.Add(pWord);
+                            computerWordsList.Add(potWord);
+                        }
+                    }    
+                }
+            }
+            
+            var computerMoveWord = computerWordsList.Last();
+            var computerMoveWordString = computerWords.Last();
+
+            for (int i = 0; i < computerMoveWordString.Length; i++)
+            {
+                computerMoveWord.Squares[i].TextBox.Text = computerMoveWordString[i].ToString();
+                computerMoveWord.Squares[i].TextBox.IsReadOnly = true;
+            }
+                
+            words2ListBox.Items.Add(computerMoveWordString);
+            points2.Content = (computerPoints += computerMoveWordString.Count()).ToString();
+
+            foreach (var sq in Squares)
+                sq.TextBox.IsEnabled = true;
+        }
+
+        void WordBuilding(Word word)
+        {
+            if (potentialWordsList.Count() > 5000) return;
+            if (word.Squares.Last().X - 1 >= 0)
+            {
+                if (squaresArray[word.Squares.Last().X - 1, word.Squares.Last().Y].TextBox.Text == string.Empty)
+                {
+                    var a = new Word();
+                    a.Squares.AddRange(word.Squares);
+                    a.Squares.Add(squaresArray[word.Squares.Last().X - 1, word.Squares.Last().Y]);
+                    potentialWordsList.Add(a);
+
+                    var b = new Word();
+                    var wordSquaresNaoborot = word.Squares.Reverse<Square>();
+                    b.Squares.Add(squaresArray[word.Squares.Last().X - 1, word.Squares.Last().Y]);
+                    b.Squares.AddRange(wordSquaresNaoborot);
+                    potentialWordsList.Add(b);
+                }
+                else
+                {
+                    if (!word.Squares.Contains(squaresArray[word.Squares.Last().X - 1, word.Squares.Last().Y]))
+                    {
+                        var tempWord = new Word();
+                        tempWord.Squares.AddRange(word.Squares);
+                        tempWord.Squares.Add(squaresArray[word.Squares.Last().X - 1, word.Squares.Last().Y]);
+                        if (!tempWordsList.Contains(tempWord))
+                        {
+                            tempWordsList.Add(tempWord);
+                            WordBuilding(tempWord);
+                        }
+                    }
+                }
+            }
+
+            if (word.Squares.Last().Y + 1 <= 4)
+            {
+                if (squaresArray[word.Squares.Last().X, word.Squares.Last().Y + 1].TextBox.Text == string.Empty)
+                {
+                    var a = new Word();
+                    a.Squares.AddRange(word.Squares);
+                    a.Squares.Add(squaresArray[word.Squares.Last().X, word.Squares.Last().Y + 1]);
+                    potentialWordsList.Add(a);
+
+                    var b = new Word();
+                    var wordSquaresNaoborot = word.Squares.Reverse<Square>();
+                    b.Squares.Add(squaresArray[word.Squares.Last().X, word.Squares.Last().Y + 1]);
+                    b.Squares.AddRange(wordSquaresNaoborot);
+                    potentialWordsList.Add(b);
+                }
+                else
+                {
+                    if (!word.Squares.Contains(squaresArray[word.Squares.Last().X, word.Squares.Last().Y + 1]))
+                    {
+                        var tempWord = new Word();
+                        tempWord.Squares.AddRange(word.Squares);
+                        tempWord.Squares.Add(squaresArray[word.Squares.Last().X, word.Squares.Last().Y + 1]);
+                        if (!tempWordsList.Contains(tempWord))
+                        {
+                            tempWordsList.Add(tempWord);
+                            WordBuilding(tempWord);
+                        }
+                    }
+                }
+            }
+
+            if (word.Squares.Last().X + 1 <= 4)
+            {
+                if (squaresArray[word.Squares.Last().X + 1, word.Squares.Last().Y].TextBox.Text == string.Empty)
+                {
+                    var a = new Word();
+                    a.Squares.AddRange(word.Squares);
+                    a.Squares.Add(squaresArray[word.Squares.Last().X + 1, word.Squares.Last().Y]);
+                    potentialWordsList.Add(a);
+
+                    var b = new Word();
+                    var wordSquaresNaoborot = word.Squares.Reverse<Square>();
+                    b.Squares.Add(squaresArray[word.Squares.Last().X + 1, word.Squares.Last().Y]);
+                    b.Squares.AddRange(wordSquaresNaoborot);
+                    potentialWordsList.Add(b);
+                }
+                else
+                {
+                    if (!word.Squares.Contains(squaresArray[word.Squares.Last().X + 1, word.Squares.Last().Y]))
+                    {
+                        var tempWord = new Word();
+                        tempWord.Squares.AddRange(word.Squares);
+                        tempWord.Squares.Add(squaresArray[word.Squares.Last().X + 1, word.Squares.Last().Y]);
+                        if (!tempWordsList.Contains(tempWord))
+                        {
+                            tempWordsList.Add(tempWord);
+                            WordBuilding(tempWord);
+                        }
+                    }
+                }
+            }
+
+            if (word.Squares.Last().Y - 1 >= 0)
+            {
+                if (squaresArray[word.Squares.Last().X, word.Squares.Last().Y - 1].TextBox.Text == string.Empty)
+                {
+                    var a = new Word();
+                    a.Squares.AddRange(word.Squares);
+                    a.Squares.Add(squaresArray[word.Squares.Last().X, word.Squares.Last().Y - 1]);
+                    potentialWordsList.Add(a);
+
+                    var b = new Word();
+                    var wordSquaresNaoborot = word.Squares.Reverse<Square>();
+                    b.Squares.Add(squaresArray[word.Squares.Last().X, word.Squares.Last().Y - 1]);
+                    b.Squares.AddRange(wordSquaresNaoborot);
+                    potentialWordsList.Add(b);
+                }
+                else
+                {
+                    if (!word.Squares.Contains(squaresArray[word.Squares.Last().X, word.Squares.Last().Y - 1]))
+                    {
+                        var tempWord = new Word();
+                        tempWord.Squares.AddRange(word.Squares);
+                        tempWord.Squares.Add(squaresArray[word.Squares.Last().X, word.Squares.Last().Y - 1]);
+                        if (!tempWordsList.Contains(tempWord))
+                        {
+                            tempWordsList.Add(tempWord);
+                            WordBuilding(tempWord);
+                        }
+                    }
+                }
             }
         }
     }

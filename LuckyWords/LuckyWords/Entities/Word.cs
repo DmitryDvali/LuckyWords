@@ -9,5 +9,10 @@ namespace LuckyWords.Entities
     class Word
     {
         public List<Square> Squares { get; set; }
+
+        public Word()
+        {
+            Squares = new List<Square>();
+        }
     }
 }
